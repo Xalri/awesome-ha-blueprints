@@ -467,6 +467,10 @@ actions:
         {%- endif -%}
       deserialized_state: '{{ (states(helper_last_controller_event) | from_json) if helper_last_controller_event is not none and (states(helper_last_controller_event) | regex_match("^\{\s*?((\"a\":\s*?\".*\"|\"t\":\s*?\d+\.\d+)(,\s*?)?){2}\s*?\}$")) else {} }}'
       trigger_delta: '{{ (as_timestamp(now()) - (deserialized_state.t | default(0))) * 1000 }}'
+      last_controller_event: >-
+        {% set raw = states(helper_last_controller_event) %} {% if raw |
+        regex_match("^\{\s*?((\"a\":\s*?\".*\"|\"t\":\s*?\d+\.\d+)(,\s*?)?){2}\s*?\}$")
+        %} {{ (raw | from_json).a }} {% else %} {% endif %}
   # update helper
   - action: input_text.set_value
     data:
