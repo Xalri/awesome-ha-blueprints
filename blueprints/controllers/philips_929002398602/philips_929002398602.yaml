@@ -644,6 +644,20 @@ actions:
               # if double press event is enabled
               - conditions: '{{ button_up_double_press }}'
                 sequence:
+                  - action: notify.persistent_notification
+                    data:
+                      message: >-
+                        trigger_action: {{ trigger_action }}
+                        last_controller_event: {{ last_controller_event }}
+                        match: {{ trigger_action | string ==
+                        last_controller_event }} trigger_delta: {{ trigger_delta
+                        | int }}ms helper_double_press_delay: {{
+                        helper_double_press_delay | int }}ms within_delay: {{
+                        trigger_delta | int <= helper_double_press_delay | int
+                        }} double_press_condition: {{ trigger_action | string ==
+                        last_controller_event and trigger_delta | int <=
+                        helper_double_press_delay | int }}
+                        deserialized_state_raw: {{ deserialized_state }}
                   - choose:
                       # if previous event was a short press
                       - conditions: '{{ trigger_action | string == last_controller_event and trigger_delta | int <= helper_double_press_delay | int }}'
